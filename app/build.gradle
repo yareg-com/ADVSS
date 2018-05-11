@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 
-
 buildscript {
     repositories {
         mavenCentral()
@@ -17,14 +16,14 @@ buildscript {
 }
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        applicationId "com.vm.shadowsocks"
+        applicationId "com.yareg.shadowfox"
         minSdkVersion 24
-        targetSdkVersion 26
+        targetSdkVersion 27
         versionCode 1
         versionName "1.2"
     }
@@ -39,8 +38,8 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
-    implementation 'com.google.zxing:core:3.3.0'
+    //implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
+    //implementation 'com.google.zxing:core:3.3.0'
     implementation 'org.bouncycastle:bcprov-jdk15on:1.57'
     implementation 'com.futuremind.recyclerfastscroll:fastscroll:0.2.5'
     implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
