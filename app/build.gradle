@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.yareg.shadowfox"
-        minSdkVersion 24
+        minSdkVersion 21
         targetSdkVersion 27
         versionCode 1
         versionName "1.2"

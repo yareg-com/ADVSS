@@ -2,6 +2,9 @@
 *.apk
 *.ap_
 
+# Build & release dir
+app/build
+app/release
 
 # Files for the ART/Dalvik VM
 *.dex
