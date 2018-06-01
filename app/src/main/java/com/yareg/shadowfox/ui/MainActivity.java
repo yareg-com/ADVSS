@@ -28,6 +28,8 @@ import android.widget.Toast;
 
 //import com.google.zxing.integration.android.IntentIntegrator;
 //import com.google.zxing.integration.android.IntentResult;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.yareg.shadowfox.R;
 import com.yareg.shadowfox.util.AppInfo;
 import com.yareg.shadowfox.core.AppProxyManager;
@@ -35,6 +37,9 @@ import com.yareg.shadowfox.core.LocalVpnService;
 import com.yareg.shadowfox.core.ProxyConfig;
 
 import java.util.Calendar;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends Activity implements
         View.OnClickListener,
@@ -44,30 +49,26 @@ public class MainActivity extends Activity implements
     private static String GL_HISTORY_LOGS;
     
     private static final String TAG = MainActivity.class.getSimpleName();
-    
     private static final String CONFIG_URL_KEY = "CONFIG_URL_KEY";
-    
     private static final int START_VPN_SERVICE_REQUEST_CODE = 1985;
     
     private Switch     switchProxy;
-    private TextView   textViewLog;
-    private ScrollView scrollViewLog;
-    private TextView   textViewProxyUrl, textViewProxyApp;
+    @BindView(R.id.textViewLog)             TextView   textViewLog;
+    @BindView(R.id.scrollViewLog)           ScrollView scrollViewLog;
+    @BindView(R.id.textViewProxyUrl)        TextView   textViewProxyUrl;
+    @BindView(R.id.textViewAppSelectDetail) TextView   textViewProxyApp;
     private Calendar   mCalendar;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        scrollViewLog = (ScrollView) findViewById(R.id.scrollViewLog);
-        textViewLog   = (TextView) findViewById(R.id.textViewLog);
+        ButterKnife.bind(this);
         
         findViewById(R.id.ProxyUrlLayout).setOnClickListener(this);
         findViewById(R.id.AppSelectLayout).setOnClickListener(this);
         findViewById(R.id.TrafficStatus).setOnClickListener(this);
         
-        textViewProxyUrl = (TextView) findViewById(R.id.textViewProxyUrl);
         String ProxyUrl = readProxyUrl();
         if (TextUtils.isEmpty(ProxyUrl)) {
             textViewProxyUrl.setText(R.string.config_not_set_value);
@@ -80,15 +81,8 @@ public class MainActivity extends Activity implements
         
         mCalendar = Calendar.getInstance();
         LocalVpnService.addOnStatusChangedListener(this);
-        
-        //Pre-App Proxy
-        if (AppProxyManager.isLollipopOrAbove) {
-            new AppProxyManager(this);
-            textViewProxyApp = (TextView) findViewById(R.id.textViewAppSelectDetail);
-        } else {
-            ((ViewGroup) findViewById(R.id.AppSelectLayout).getParent()).removeView(findViewById(R.id.AppSelectLayout));
-//            ((ViewGroup) findViewById(R.id.textViewAppSelectLine).getParent()).removeView(findViewById(R.id.textViewAppSelectLine));
-        }
+
+        new AppProxyManager(this);
     }
     
     String readProxyUrl() {
@@ -155,7 +149,7 @@ public class MainActivity extends Activity implements
                         public void onClick(DialogInterface dialogInterface, int i) {
                             switch (i) {
                                 case 0:
-                                    //scanForProxyUrl();
+                                    scanForProxyUrl();
                                     break;
                                 case 1:
                                     showProxyUrlInputDialog();
@@ -171,12 +165,13 @@ public class MainActivity extends Activity implements
         }
     }
 
-    /*
     private void scanForProxyUrl() {
         new IntentIntegrator(this)
                 .setPrompt(getString(R.string.config_url_scan_hint))
-                .initiateScan(IntentIntegrator.QR_CODE_TYPES);
-    }*/
+                .setDesiredBarcodeFormats(IntentIntegrator.QR_CODE)
+                .setBeepEnabled(false)
+                .initiateScan();
+    }
     
     private void showProxyUrlInputDialog() {
         final EditText editText = new EditText(this);
@@ -296,7 +291,6 @@ public class MainActivity extends Activity implements
             return;
         }
 
-        /*
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanResult != null) {
             String ProxyUrl = scanResult.getContents();
@@ -307,7 +301,7 @@ public class MainActivity extends Activity implements
                 Toast.makeText(MainActivity.this, R.string.err_invalid_url, Toast.LENGTH_SHORT).show();
             }
             return;
-        }*/
+        }
         
         super.onActivityResult(requestCode, resultCode, intent);
     }
@@ -387,14 +381,13 @@ public class MainActivity extends Activity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (AppProxyManager.isLollipopOrAbove) {
-            if (AppProxyManager.Instance.proxyAppInfo.size() != 0) {
-                String tmpString = "";
-                for (AppInfo app : AppProxyManager.Instance.proxyAppInfo) {
-                    tmpString += app.getAppLabel() + ", ";
-                }
-                textViewProxyApp.setText(tmpString);
+
+        if (AppProxyManager.Instance.proxyAppInfo.size() != 0) {
+            String tmpString = "";
+            for (AppInfo app : AppProxyManager.Instance.proxyAppInfo) {
+                tmpString += app.getAppLabel() + ", ";
             }
+            textViewProxyApp.setText(tmpString);
         }
     }
     
@@ -403,5 +396,4 @@ public class MainActivity extends Activity implements
         LocalVpnService.removeOnStatusChangedListener(this);
         super.onDestroy();
     }
-    
 }

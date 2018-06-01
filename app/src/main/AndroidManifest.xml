@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.yareg.shadowfox">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.yareg.shadowfox">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:hardwareAccelerated="true"
         android:allowBackup="true"
         android:icon="@drawable/shadowsocks"
         android:label="@string/app_name"
@@ -26,10 +29,15 @@
         <activity android:name=".ui.SessionDetail"/>
 
         <activity
-            android:name="com.yareg.shadowfox.ui.AppManager"
+            android:name=".ui.AppManager"
             android:label="@string/proxied_apps"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"/>
+
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            tools:replace="screenOrientation" />
 
         <service
             android:name=".core.LocalVpnService"

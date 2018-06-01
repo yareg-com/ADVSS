@@ -15,9 +15,9 @@ import java.util.List;
 import static android.content.Context.MODE_PRIVATE;
 
 public class AppProxyManager {
-    public static boolean isLollipopOrAbove = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
 
     public static AppProxyManager Instance;
+
     private static final String PROXY_APPS = "PROXY_APPS";
     private Context mContext;
 

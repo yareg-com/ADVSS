@@ -24,6 +24,8 @@ import com.yareg.shadowfox.util.AppManagerAdapter;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -32,26 +34,24 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
-public class AppManager extends Activity{
-    private View loadingView;
-    private RecyclerView appListView;
-    private FastScroller fastScroller;
-    
+public class AppManager extends Activity {
+
     private AppManagerAdapter adapter;
+
+    @BindView(R.id.loading)      View         loadingView;
+    @BindView(R.id.list)         RecyclerView appListView;
+    @BindView(R.id.fastscroller) FastScroller fastScroller;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.layout_apps);
+        setContentView(R.layout.layout_apps);
+        ButterKnife.bind(this);
 
         ActionBar actionBar = getActionBar();
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
 
-        loadingView = findViewById(R.id.loading);
-        appListView = findViewById(R.id.list);
-        fastScroller = findViewById(R.id.fastscroller);
-        
         appListView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         appListView.setItemAnimator(new DefaultItemAnimator());
 

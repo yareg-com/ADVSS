@@ -21,6 +21,7 @@ import com.yareg.shadowfox.util.SessionDetailAdapter;
 
 import java.util.List;
 
+import butterknife.BindView;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -30,18 +31,18 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class SessionDetail extends Activity {
-    private View loadingView;
-    private RecyclerView packetList;
-    private FastScroller fastScroller;
-    
+
     private SessionDetailAdapter adapter;
+
+    @BindView(R.id.loading)     View         loadingView;
+    @BindView(R.id.packet_list) RecyclerView packetList;
+    @BindView(R.id.scroller)    FastScroller fastScroller;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_session_detail);
         
-        // 设置此数据流的概述
         Bundle bundle = this.getIntent().getExtras();
         int port = bundle.getInt("port");
         final SessionContent content = TrafficSessionManager.getByPort(port);
@@ -51,16 +52,10 @@ public class SessionDetail extends Activity {
                 + "RX: " + content.getBytesReceived() + ", TX: " + content.getBytesSent();
         textView.setText(overview);
     
-        // 左上添加返回图标
         ActionBar actionBar = getActionBar();
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
-        
-        loadingView = findViewById(R.id.loading);
-        packetList = findViewById(R.id.packet_list);
-        fastScroller = findViewById(R.id.scroller);
-        
-        // 设置ITEM的展示方式
+
         packetList.setLayoutManager(new LinearLayoutManager(this, LinearLayout.VERTICAL, false));
         packetList.setItemAnimator(new DefaultItemAnimator());
     

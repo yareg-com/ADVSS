@@ -414,22 +414,19 @@ public class LocalVpnService extends VpnService implements Runnable {
             }
         }
 
-        if (AppProxyManager.isLollipopOrAbove){
-            if (AppProxyManager.Instance.proxyAppInfo.size() == 0){
-                writeLog("Proxy All Apps");
+
+        if (AppProxyManager.Instance.proxyAppInfo.size() == 0){
+            writeLog("Proxy All Apps");
+        }
+        builder.addAllowedApplication("com.vm.shadowsocks");//需要把自己加入代理，不然会无法进行网络连接
+        for (AppInfo app : AppProxyManager.Instance.proxyAppInfo){
+            try{
+                builder.addAllowedApplication(app.getPkgName());
+                writeLog("Proxy App: " + app.getAppLabel());
+            } catch (Exception e){
+                e.printStackTrace();
+                writeLog("Proxy App Fail: " + app.getAppLabel());
             }
-            builder.addAllowedApplication("com.vm.shadowsocks");//需要把自己加入代理，不然会无法进行网络连接
-            for (AppInfo app : AppProxyManager.Instance.proxyAppInfo){
-                try{
-                    builder.addAllowedApplication(app.getPkgName());
-                    writeLog("Proxy App: " + app.getAppLabel());
-                } catch (Exception e){
-                    e.printStackTrace();
-                    writeLog("Proxy App Fail: " + app.getAppLabel());
-                }
-            }
-        } else {
-            writeLog("No Pre-App proxy, due to low Android version.");
         }
 
         Intent intent = new Intent(this, MainActivity.class);

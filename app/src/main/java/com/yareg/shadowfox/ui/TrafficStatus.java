@@ -21,6 +21,8 @@ import com.yareg.shadowfox.util.TrafficStatusAdapter;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -30,37 +32,33 @@ import io.reactivex.schedulers.Schedulers;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 
 public class TrafficStatus extends Activity {
-    private View loadingView;
-    private RecyclerView sessionList;
-    private FastScroller fastScroller;
-    
-    private TrafficStatusAdapter adapter;
-    
+
     public static TrafficStatus Instance;
+
+    private TrafficStatusAdapter adapter;
+
+    @BindView(R.id.loading)      View         loadingView;
+    @BindView(R.id.session_list) RecyclerView sessionList;
+    @BindView(R.id.scroller)     FastScroller fastScroller;
     
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_traffic_status);
+        ButterKnife.bind(this);
     
         Instance = this;
     
-        // 左上添加返回图标
         ActionBar actionBar = getActionBar();
         if (actionBar != null)
             actionBar.setDisplayHomeAsUpEnabled(true);
         
         TextView overview = (TextView) findViewById(R.id.traffic_overview);
-        String overviewContent = "原始：RX：" + TrafficSessionManager.OriginBytesSent + " B, TX：" + TrafficSessionManager.OriginBytesReceived + " B\n" +
-                "加密：RX：" + TrafficSessionManager.EncryptedBytesSent + " B, TX：" + TrafficSessionManager.EncryptedBytesReceived + " B\n" +
-                "视频：RX：" + TrafficSessionManager.VideoBytesSent + " B, TX：" + TrafficSessionManager.VideoBytesReceived + " B";
+        String overviewContent = "RX：" + TrafficSessionManager.OriginBytesSent + " B, TX：" + TrafficSessionManager.OriginBytesReceived + " B\n" +
+                "RX：" + TrafficSessionManager.EncryptedBytesSent + " B, TX：" + TrafficSessionManager.EncryptedBytesReceived + " B\n" +
+                "RX：" + TrafficSessionManager.VideoBytesSent + " B, TX：" + TrafficSessionManager.VideoBytesReceived + " B";
         overview.setText(overviewContent);
         
-        loadingView = findViewById(R.id.loading);
-        sessionList = findViewById(R.id.session_list);
-        fastScroller = findViewById(R.id.scroller);
-    
-        // LayoutManager用于确定每个Item的排列方式，为增删项目提供动画
         sessionList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         sessionList.setItemAnimator(new DefaultItemAnimator());
     
@@ -87,7 +85,6 @@ public class TrafficStatus extends Activity {
                 sessionList.setAdapter(adapter);
                 fastScroller.setRecyclerView(sessionList);
                 
-                
                 long animTime = 2;
                 
                 sessionList.setAlpha(0);
@@ -113,7 +110,6 @@ public class TrafficStatus extends Activity {
         };
         
         observable.subscribe(observer);
-        
      }
      
     public void startNewActivity(Intent intent) {
